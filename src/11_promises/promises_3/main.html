@@ -1,0 +1,253 @@
+<meta charset="UTF-8">
+<script src="axios.js"></script>
+<script src="api.js"></script>
+
+
+<script>
+    // // 1
+    // let myPromise = new Promise((resolve, reject) => {
+    //     alert('Hello');
+    // });
+    // myPromise.then(() => {
+    //     console.log("myPromise зарезолвился, и я узнал об этом");
+    // })
+
+    // // 2
+    // const myPromise = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         alert('Hello')
+    //         resolve()
+    //     }, 2000)
+    // })
+    // myPromise.then(() => {
+    //     console.log("myPromise зарезолвился, и я узнал об этом");
+    // })
+
+    // // 3
+    // const myPromise = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         alert(Math.random())
+    //         resolve()
+    //     }, 3000)
+    // })
+    // myPromise.then(() => {
+    //     console.log("myPromise зарезолвился, и я узнал об этом");
+    // })
+
+    // // 4
+    // const myPromise = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         resolve(Math.random())
+    //     }, 2000)
+    // })
+    // myPromise.then((data) => {
+    //     console.log(`myPromise зарезолвился, и я узнал об этом: ${data}`);
+    // })
+    // myPromise.then((data) => {
+    //     console.log(`myPromise зарезолвился, и я узнал об этом: ${data}`);
+    // })
+    // console.log('finish')
+    //
+    // 1) Что и в какой последовательности мы увидим  в консоле?
+    // --> finish
+    // --> myPromise зарезолвился, и я узнал об этом: 0,987654321
+    // --> myPromise зарезолвился, и я узнал об этом: 0,987654321
+    //
+    // 2) Мы увидим в качестве number одно и тоже число или 2 разных числа?
+    // --> одно и тоже число
+
+    // // 5
+    // const doAfter = (sec) => {
+    //     return new Promise((resolve, reject) => {
+    //         setTimeout(() => {
+    //             resolve(new Date().getSeconds())
+    //         }, sec * 1000)
+    //     })
+    // }
+    // doAfter(5).then(() => console.log('я сработал через 5 секунд')); --> 2
+    // doAfter(3).then(() => console.log('а я сработал через 3 секунд')); --> 1
+    // doAfter(10).then(() => console.log('я сработал через 10 секунд')); --> 3
+
+    // // 6
+    // let promise = doAfter(3);
+    // promise.then( () => console.log('я сработал через 3 секунд') );
+    // promise.then( () => console.log('и я тоже следом сработал через 3 секунд') );
+    // promise.then( () => console.log('и я') );
+    //
+    // 3 console.log() мы увидем одновременно или или каждый с задержкой в 3 секунды?
+    // --> одновременно
+
+    // // 7
+    // let promise = doAfter(3);
+    // console.log(new Date().getSeconds())
+    // setTimeout(() => {
+    //     promise.then((data) => console.log(`myPromise зарезолвился: ${data} / finish: ${new Date().getSeconds()}`)
+    //     )
+    // }, 5000)
+    //
+    // 1) Выполнится ли промис если он уже в состоянии resolved? --> да
+    // 2) Если выполнится, то через какое время выполнится? (3, 5 или 8 секунд) --> 5 секунд
+
+    // // 8
+    // let promise = doAfter(3);
+    // console.log(new Date().getSeconds())
+    // setTimeout(() => {
+    //     promise.then((data) => console.log(`myPromise зарезолвился: ${data} / finish: ${new Date().getSeconds()}`)
+    //     )
+    // }, 1000)
+    //
+    // 1) Выполнится ли промис если он уже в состоянии resolved? --> да
+    // 2) Если выполнится, то через какое время выполнится? (3, 5 или 8 секунд) --> 3 секунды
+
+    // // 9
+    // const myPromise = new Promise((resolve, reject) => {
+    //     let i = 0
+    //     setInterval(() => {
+    //         i++
+    //         resolve(i)
+    //     }, 5000)
+    // })
+    // myPromise.then((data) => console.log(data))
+    //
+    // Промис зарезолвится 1 раз или будет резолвиться новым значением каждые 5 секунд?
+    // --> 1 раз
+
+    // // 10
+    // let pr1 = doAfter(3);
+    // let pr2 = pr1.then(() => console.log('Мой промис зарезолвился'));
+    // let something = pr2.then(() => console.log('Мой промис зарезолвился следом за pr1'));
+    // // Что будет в переменной something? --> Promise
+    // // Сколько у нас получиться промисов? --> 3
+
+    // // 11
+    // doAfter(1)
+    //     .then(() => console.log('Мой промис зарезолвился'))
+    //     .then(() => console.log('Мой промис зарезолвился следом'))
+
+    // // 12
+    // let callback1 = () => console.log('Мой промис зарезолвился');
+    // let callback2 = () => console.log('Мой промис тоже зарезолвился следом');
+    //
+    // doAfter(1)
+    //     .then(callback1)
+    //     .then(callback2)
+
+    // // 13
+    // Напишите код так, чтобы первый колбэк что-то вернул,
+    // а второй колбэк принял это значение.
+    //
+    // let callback1 = () => 'Return from first promise'
+    // let callback2 = (data) => console.log(data);
+    //
+    // doAfter(3)
+    //     .then(callback1)
+    //     .then(callback2)
+
+    // // 14
+    // Доработайте этот код так,
+    // чтобы во втором колбэке второго then
+    // мы увидели “it-kamasutra.com”.
+    //
+    // let promise = new Promise((resolve) => {
+    //     let data = {
+    //         cities: [{title: "Minsk"}, {title: "Kiev"}],
+    //         website: "it-kamasutra.com"
+    //     };
+    //     resolve(data);
+    // });
+    //
+    // promise
+    //     .then(data => {
+    //         console.log(data);
+    //         return data.website
+    //     })
+    //     .then(website => {
+    //         console.log(website);
+    //     })
+
+    // // 15
+    // api.sendStudentsCountToItKamasutra(20)
+    //     .then(res => {
+    //         console.log(res);
+    //         return res.data
+    //     })
+    //     .then(data => console.log(data))
+    //
+    // api.getVacanciesCountFromMicrosoft()
+    //     .then(res => {
+    //         console.log(res);
+    //         return res.data
+    //     })
+    //     .then(data => console.log(data))
+    //
+    // api.getVacanciesCountFromGoogle()
+    //     .then(res => {
+    //         console.log(res);
+    //         return res.data
+    //     })
+    //     .then(data => console.log(data))
+
+    // // 16
+    // создайте функцию (копипастом) getRandomAfter,
+    // которая будет рандомно выдавать какое-то число
+    // через заданное кол-во секунд
+    //
+    // const getRandomAfter = (sec) => {
+    //     return new Promise((resolve) => {
+    //         setTimeout(() => {
+    //             resolve(Math.round(Math.random() * 10))
+    //         }, sec * 1000)
+    //     })
+    // }
+    //
+    // getRandomAfter(4)
+    //     .then(number => console.log(`я получил ${number} спустя 4 секунды`))
+
+    // // 17
+    // Как вывести здесь все 3 числа?
+    //
+    // let promises = [getRandomAfter(1), getRandomAfter(2), getRandomAfter(3)];
+    // let commonPromise = Promise.all(promises);
+    // commonPromise.then((data) => {
+    //     data.forEach(f => console.log(f))
+    // });
+
+    // // 18
+    // Нужно в камасутру отправить суммарное кол-во вакансий,
+    // значение которое получится в ответах
+    // от компании microsoft и google
+    //
+    // let count = 0
+    // api.getVacanciesCountFromMicrosoft()
+    //     .then(data => {
+    //         count += data.data.vacancies
+    //         return api.getVacanciesCountFromGoogle()
+    //     })
+    //     .then(data => {
+    //         count += data.data.vacancies
+    //         return api.sendStudentsCountToItKamasutra(count)
+    //     })
+    //     .then(data => console.log(data.data.requestedCount))
+    //
+    // Promise.all([api.getVacanciesCountFromMicrosoft(), api.getVacanciesCountFromGoogle()])
+    //     .then(data => {
+    //         return data.map(m => m.data.vacancies)
+    //     })
+    //     .then(data => {
+    //         let sum = data.reduce((acc, el) => acc + el)
+    //         return api.sendStudentsCountToItKamasutra(sum)
+    //     })
+    //     .then(data => console.log(data.data.requestedCount))
+    //
+    // const sumCountVacancies = async () => {
+    //     let count = 0
+    //     const microsoft = await api.getVacanciesCountFromMicrosoft()
+    //     count += microsoft.data.vacancies
+    //     const google = await api.getVacanciesCountFromGoogle()
+    //     count += google.data.vacancies
+    //     const kamasutra = await api.sendStudentsCountToItKamasutra(count)
+    //     console.log(kamasutra.data.requestedCount)
+    // }
+    // sumCountVacancies()
+
+</script>
